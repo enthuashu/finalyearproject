@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import login from "../images/login.png";
 import { Link, useHistory } from "react-router-dom";
-
+import CircularProgress from "@mui/material/CircularProgress";
+import Avatar from "@mui/material/Avatar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -19,9 +20,12 @@ function Register() {
     aadhar: "",
     hospital: "",
     haddress: "",
-    hPic: "",
     specialization: "",
+    workingHour: "",
   });
+  const [ispicloading, setispicloading] = useState(false);
+  const [profilePic, setProfilePicUrl] = useState(null);
+  const [hospitalPic, sethospitalPic] = useState(null);
   const handleInputs = (e) => {
     let name = e.target.name;
     let value = e.target.value;
@@ -41,7 +45,9 @@ function Register() {
     e.preventDefault();
     try {
       const { name, phone, email, password, cpassword } = user;
-
+      if (!profilePic && user.type === "doctor") {
+        return toast.error("Upload picture");
+      }
       if (
         name.length === 0 ||
         phone.length === 0 ||
@@ -56,7 +62,11 @@ function Register() {
         return toast.error("Password and confirm password should match");
 
       await axios
-        .post(`/api/user/register`, user)
+        .post(`/api/user/register`, {
+          ...user,
+          hPic: hospitalPic,
+          doctorPic: profilePic,
+        })
         .then((res) => {
           if (res.data.success) {
             history.push("/login");
@@ -71,7 +81,64 @@ function Register() {
       return toast.error("Some thing went wrong");
     }
   };
+  const handlePicUpload = (e) => {
+    const image = e.target.files[0];
+    console.log(image);
+    if (
+      image.type !== "image/jpg" &&
+      image.type !== "image/png" &&
+      image.type !== "image/jpeg"
+    ) {
+      toast.error("Upload jpg/png/jpeg File!", { position: "bottom-right" });
+      return;
+    }
+    if (image.size > 2048 * 1024) {
+      toast.error("File size exceeded 2MB!", { position: "bottom-right" });
+      return;
+    }
+    const formdata = new FormData();
+    formdata.append("file", image);
+    formdata.append("upload_preset", "qvdaphyj");
+    formdata.append("cloud_name", "enthuashu");
+    setispicloading(true);
+    axios
+      .post("https://api.cloudinary.com/v1_1/enthuashu/image/upload", formdata)
+      .then((response) => {
+        setProfilePicUrl(response.data.secure_url);
 
+        setispicloading(false);
+        toast.success("Profile Image upload", { position: "bottom-right" });
+      });
+  };
+  const handlePicUpload2 = (e) => {
+    const image = e.target.files[0];
+    console.log(image);
+    if (
+      image.type !== "image/jpg" &&
+      image.type !== "image/png" &&
+      image.type !== "image/jpeg"
+    ) {
+      toast.error("Upload jpg/png/jpeg File!", { position: "bottom-right" });
+      return;
+    }
+    if (image.size > 2048 * 1024) {
+      toast.error("File size exceeded 2MB!", { position: "bottom-right" });
+      return;
+    }
+    const formdata = new FormData();
+    formdata.append("file", image);
+    formdata.append("upload_preset", "qvdaphyj");
+    formdata.append("cloud_name", "enthuashu");
+    setispicloading(true);
+    axios
+      .post("https://api.cloudinary.com/v1_1/enthuashu/image/upload", formdata)
+      .then((response) => {
+        sethospitalPic(response.data.secure_url);
+
+        setispicloading(false);
+        toast.success("Profile Image upload", { position: "bottom-right" });
+      });
+  };
   return (
     <div>
       <ToastContainer />
@@ -208,18 +275,168 @@ function Register() {
                           placeholder="Surgeon, Dentist etc.."
                         />
                       </div>
-                      <div class="row px-3">
-                        <label class="mb-1">
-                          <h6 class="mb-0 text-sm"> Picture</h6>
-                        </label>
-                        <input
-                          class="mb-4"
-                          type="file"
-                          onChange={handleInputs}
-                          value={user.hPic}
-                          name="hpic"
-                        />
+
+                      <div className="row px-3">
+                        {ispicloading ? (
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              padding: "5px",
+                              margin: "10px",
+                            }}
+                          >
+                            <CircularProgress />
+                          </div>
+                        ) : (
+                          <>
+                            <p
+                              style={{ fontWeight: "bold" }}
+                              className="text-dark"
+                            >
+                              Profile Picture
+                            </p>
+
+                            {profilePic ? (
+                              <>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    padding: "5px",
+                                  }}
+                                  className="profile_pic_block"
+                                >
+                                  <Avatar
+                                    alt="Profile Pic"
+                                    src={profilePic}
+                                    sx={{ width: 60, height: 60 }}
+                                    variant="rounded"
+                                  />
+                                </div>
+                                <p
+                                  className="text-dark mt-2"
+                                  onClick={() => setProfilePicUrl(null)}
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  Delete
+                                </p>
+                              </>
+                            ) : (
+                              <>
+                                <label htmlFor="clogo">
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      padding: "5px",
+                                    }}
+                                    className="register_page_form_com_logo"
+                                    onClick={{}}
+                                  >
+                                    <Avatar
+                                      alt="Profile Pic"
+                                      sx={{ width: 60, height: 60 }}
+                                      variant="rounded"
+                                    />
+                                  </div>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    name="profile_pic"
+                                    id="clogo"
+                                    onChange={(e) => handlePicUpload(e)}
+                                  />
+                                </label>
+                              </>
+                            )}
+                          </>
+                        )}
                       </div>
+                      <div className="row px-3">
+                        {ispicloading ? (
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              padding: "5px",
+                              margin: "10px",
+                            }}
+                          >
+                            <CircularProgress />
+                          </div>
+                        ) : (
+                          <>
+                            <p
+                              style={{ fontWeight: "bold" }}
+                              className="text-dark"
+                            >
+                              Hospital Photo
+                            </p>
+
+                            {hospitalPic ? (
+                              <>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    padding: "5px",
+                                  }}
+                                  className="profile_pic_block"
+                                >
+                                  <Avatar
+                                    alt="Profile Pic"
+                                    src={hospitalPic}
+                                    sx={{ width: 60, height: 60 }}
+                                    variant="rounded"
+                                  />
+                                </div>
+                                <p
+                                  className="text-dark mt-2"
+                                  onClick={() => sethospitalPic(null)}
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  Delete
+                                </p>
+                              </>
+                            ) : (
+                              <>
+                                <label htmlFor="clogo">
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      padding: "5px",
+                                    }}
+                                    className="register_page_form_com_logo"
+                                    onClick={{}}
+                                  >
+                                    <Avatar
+                                      alt="Profile Pic"
+                                      sx={{ width: 60, height: 60 }}
+                                      variant="rounded"
+                                    />
+                                  </div>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    name="profile_pic"
+                                    id="clogo"
+                                    onChange={(e) => handlePicUpload2(e)}
+                                  />
+                                </label>
+                              </>
+                            )}
+                          </>
+                        )}
+                      </div>
+
                       <div class="row px-3">
                         <label class="mb-1">
                           <h6 class="mb-0 text-sm">Hospital Address</h6>
@@ -232,6 +449,20 @@ function Register() {
                           value={user.haddress}
                           name="haddress"
                           placeholder="Hospital address.."
+                        />
+                      </div>
+                      <div class="row px-3">
+                        <label class="mb-1">
+                          <h6 class="mb-0 text-sm">Working Hour</h6>
+                        </label>
+                        <input
+                          class="mb-4"
+                          required
+                          type="text"
+                          onChange={handleInputs}
+                          value={user.workingHour}
+                          name="workingHour"
+                          placeholder="8AM-2PM"
                         />
                       </div>
                     </>

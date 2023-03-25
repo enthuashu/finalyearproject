@@ -21,6 +21,9 @@ import Welcome from "./component/private/Welcome";
 import Mainservice from "./component/Mainservice";
 import Team from "./component/tfc/team";
 import Logout from "./component/Logout";
+import { ProvideAuth } from "./Utils/useAuth";
+import DataDashBoard from "./component/DataDashboard";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   const { pathname } = useLocation();
@@ -31,109 +34,116 @@ const App = () => {
 
   return (
     <div>
-      <Switch>
-        <Route exact path="/">
-          <NavBar />
-          <Maintenance />
-          <Main />
-          <Mainservice />
-          <Caraousel />
-          <ContactUs />
-          <Footer />
-        </Route>
-        <Route exact path="/oxygen">
-          <NavBar />
-          <Oxygen />
-          <Caraousel />
-          <ContactUs />
-          <Footer />
-        </Route>
-        <Route exact path="/hospital">
-          <NavBar />
-          <Hospital />
-          <Caraousel />
-          <ContactUs />
-          <Footer />
-        </Route>
-        <Route exact path="/beds">
-          <NavBar />
-          <Bed />
-          <Caraousel />
-          <ContactUs />
-          <Footer />
-        </Route>
+      <ToastContainer />
+      <ProvideAuth>
+        <Switch>
+          <Route exact path="/">
+            <NavBar />
+            <Maintenance />
+            <Main />
+            <Mainservice />
+            <Caraousel />
+            <ContactUs />
+            <Footer />
+          </Route>
+          <Route exact path="/datadashboard">
+            <NavBar />
+            <DataDashBoard />
+          </Route>
+          <Route exact path="/oxygen">
+            <NavBar />
+            <Oxygen />
+            <Caraousel />
+            <ContactUs />
+            <Footer />
+          </Route>
+          <Route exact path="/hospital">
+            <NavBar />
+            <Hospital />
+            <Caraousel />
+            <ContactUs />
+            <Footer />
+          </Route>
+          <Route exact path="/beds">
+            <NavBar />
+            <Bed />
+            <Caraousel />
+            <ContactUs />
+            <Footer />
+          </Route>
 
-        <Route exact path="/food">
-          <NavBar />
-          <Food />
-          <Caraousel />
-          <ContactUs />
-          <Footer />
-        </Route>
-        <Route exact path="/medicine">
-          <NavBar />
-          <Medicine />
-          <Caraousel />
-          <ContactUs />
-          <Footer />
-        </Route>
-        <Route exact path="/plasma">
-          <NavBar />
-          <Plasma />
-          <Caraousel />
-          <ContactUs />
-          <Footer />
-        </Route>
-        <Route exact path="/volunteer">
-          <NavBar />
-          <Volunteer />
-          <Caraousel />
-          <ContactUs />
-          <Footer />
-        </Route>
+          <Route exact path="/food">
+            <NavBar />
+            <Food />
+            <Caraousel />
+            <ContactUs />
+            <Footer />
+          </Route>
+          <Route exact path="/medicine">
+            <NavBar />
+            <Medicine />
+            <Caraousel />
+            <ContactUs />
+            <Footer />
+          </Route>
+          <Route exact path="/plasma">
+            <NavBar />
+            <Plasma />
+            <Caraousel />
+            <ContactUs />
+            <Footer />
+          </Route>
+          <Route exact path="/volunteer">
+            <NavBar />
+            <Volunteer />
+            <Caraousel />
+            <ContactUs />
+            <Footer />
+          </Route>
 
-        <Route exact path="/login">
-          <NavBar />
-          <Login />
-          <Footer />
-        </Route>
-        <Route exact path="/register">
-          <NavBar />
-          <Register />
-          <Footer />
-        </Route>
-        <Route exact path="/contacts">
-          <NavBar />
-          <ContactUs />
-          <Caraousel />
-          <Footer />
-        </Route>
-        <Route exact path="/about">
-          <NavBar />
-          <About />
-          <Caraousel />
-          <ContactUs />
-          <Footer />
-        </Route>
-        <Route exact path="/team">
-          <NavBar />
-          <Team />
-          <Caraousel />
-          <ContactUs />
-          <Footer />
-        </Route>
-        <Route exact path="/welcome">
-          <NavBar />
-          <Welcome />
-          <Caraousel />
-          <ContactUs />
-          <Footer />
-        </Route>
-        <Route exact path="/logout">
-          <Logout />
-        </Route>
-        <Redirect to="/" />
-      </Switch>
+          <Route exact path="/login">
+            <NavBar />
+            <Login />
+            <Footer />
+          </Route>
+          <Route exact path="/register">
+            <NavBar />
+            <Register />
+            <Footer />
+          </Route>
+          <Route exact path="/contacts">
+            <NavBar />
+            <ContactUs />
+            <Caraousel />
+            <Footer />
+          </Route>
+          <Route exact path="/about">
+            <NavBar />
+            <About />
+            <Caraousel />
+            <ContactUs />
+            <Footer />
+          </Route>
+          <Route exact path="/team">
+            <NavBar />
+            <Team />
+            <Caraousel />
+            <ContactUs />
+            <Footer />
+          </Route>
+          <Route exact path="/welcome">
+            <NavBar />
+            <Welcome />
+            <Caraousel />
+            <ContactUs />
+            <Footer />
+          </Route>
+          <Route exact path="/logout">
+            <Logout />
+          </Route>
+          <Redirect to="/" />
+        </Switch>
+      </ProvideAuth>
     </div>
   );
 };

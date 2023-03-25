@@ -3,9 +3,11 @@ import { Link, useHistory } from "react-router-dom";
 import login from "../images/login.png";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { useAuth } from "../Utils/useAuth";
 
 function Login() {
   const history = useHistory();
+  const { getUser } = useAuth();
   const [user, setuser] = useState({
     email: "",
     password: "",
@@ -31,6 +33,7 @@ function Login() {
       .post(`/api/user/signin`, data)
       .then((res) => {
         if (res.data.success) {
+          getUser();
           toast.success("Successfully registered");
           history.push("/welcome");
         }

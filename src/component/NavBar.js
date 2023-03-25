@@ -1,8 +1,11 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import Logo from "../images/logo.png";
+import { useAuth } from "../Utils/useAuth";
 
 function NavBar() {
+  const history = useHistory();
+  const { signOut, user } = useAuth();
   const RenderMenu = () => {
     if (true) {
       return (
@@ -169,17 +172,27 @@ function NavBar() {
                       Our Team
                     </NavLink>
                   </li> */}
-                  <li className="nav-item">
-                    <NavLink
-                      activeClassName="nav-link activenav"
-                      to="/logout"
-                      className="nav-link"
-                    >
-                      <button type="button" className="btn">
+                  {user ? (
+                    <li className="nav-item">
+                      <button
+                        onClick={() => signOut()}
+                        type="button"
+                        className="btn"
+                      >
                         Logout
                       </button>
-                    </NavLink>
-                  </li>
+                    </li>
+                  ) : (
+                    <li className="nav-item">
+                      <button
+                        onClick={() => history.push("/login")}
+                        type="button"
+                        className="btn"
+                      >
+                        Login
+                      </button>
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
